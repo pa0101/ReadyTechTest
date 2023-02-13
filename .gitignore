@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ReadyTech/ReadyTech.Api/obj
+/ReadyTech/ReadyTech.Api/bin/Debug/net7.0
+/ReadyTech/.vs/ReadyTech
+/ReadyTech/ReadyTech.Api/ReadyTech.Api.csproj.user

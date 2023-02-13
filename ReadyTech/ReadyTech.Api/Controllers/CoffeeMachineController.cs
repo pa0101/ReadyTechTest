@@ -13,6 +13,9 @@ namespace ReadyTech.Api.Controllers
         private readonly ICoffeeMachine _coffeeMachine;
         private readonly IWeatherService _weatherService;
         private static int _coffeeBrewCounter = 0;
+        private const string HamiltonNZLat = "-37.78";
+        private const string HamiltonNZLong = "175.27";
+        private const double TemperatureLimit = 30;
 
         public CoffeeMachineController(ICoffeeMachine coffeeMachine, IWeatherService weatherService)
         {
@@ -32,10 +35,10 @@ namespace ReadyTech.Api.Controllers
 
                 if (_coffeeMachine.CheckIfMachineHasCoffee(_coffeeBrewCounter))
                 {
-                    var weather = await _weatherService.GetTemperatureFromCoordinates("-37.78", "175.27"); // <-- Coordinates of Hamilton, New Zealand
+                    var weather = await _weatherService.GetTemperatureFromCoordinates(HamiltonNZLat, HamiltonNZLong);
                     _coffeeMachine.Coffee = new Coffee
                     {
-                        Message = weather.TemperatureCelcius > 30.0 ? "Your refreshing iced coffee is ready" : "Your piping hot coffee is ready",
+                        Message = weather.TemperatureCelcius > TemperatureLimit ? "Your refreshing iced coffee is ready" : "Your piping hot coffee is ready",
                         Prepared = DateTimeUtils.FormatDateTimeToISO8601(utcNow)
                     };
 

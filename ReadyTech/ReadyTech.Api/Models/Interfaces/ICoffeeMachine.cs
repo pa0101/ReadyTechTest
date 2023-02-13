@@ -1,4 +1,4 @@
-﻿namespace ReadyTech.Api.Models
+﻿namespace ReadyTech.Api.Models.Interfaces
 {
     public interface ICoffeeMachine
     {

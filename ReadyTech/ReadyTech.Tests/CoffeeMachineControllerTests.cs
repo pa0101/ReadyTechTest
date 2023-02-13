@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ReadyTech.Api.Controllers;
 using ReadyTech.Api.Models;
+using ReadyTech.Api.Models.Interfaces;
+using ReadyTech.Api.Services.Interfaces;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ReadyTech.Tests
@@ -11,18 +14,20 @@ namespace ReadyTech.Tests
     public class CoffeeMachineControllerTests
     {
         [Fact]
-        public void BrewCoffee_IsMachineBrewingAndHasCoffee_ShouldReturnOkResponse()
+        public async Task BrewCoffee_IsMachineBrewingAndHasCoffee_ShouldReturnOkResponse()
         {
             // Arrange
-            var mockMachine = new Mock<ICoffeeMachine>();
+            var machineMock = new Mock<ICoffeeMachine>();
+            machineMock.Setup(x => x.CheckIfMachineIsBrewingCoffee(It.IsAny<DateTime>())).Returns(true);
+            machineMock.Setup(x => x.CheckIfMachineHasCoffee(1)).Returns(true);
 
-            mockMachine.Setup(x => x.CheckIfMachineIsBrewingCoffee(It.IsAny<DateTime>())).Returns(true);
-            mockMachine.Setup(x => x.CheckIfMachineHasCoffee(1)).Returns(true);
+            var weatherServiceMock = new Mock<IWeatherService>();
+            weatherServiceMock.Setup(x => x.GetTemperatureFromCoordinates(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Weather());
 
-            var controller = new CoffeeMachineController(mockMachine.Object);
+            var controller = new CoffeeMachineController(machineMock.Object, weatherServiceMock.Object);
 
             // Act
-            var result = controller.BrewCoffee();
+            var result = await controller.BrewCoffee();
 
             // Assert
             var okObjectResult = result as OkObjectResult;
@@ -33,18 +38,21 @@ namespace ReadyTech.Tests
         }
 
         [Fact]
-        public void BrewCoffee_IsMachineBrewingButHasNoCoffee_ShouldReturn503Response()
+        public async Task BrewCoffee_IsMachineBrewingButHasNoCoffee_ShouldReturn503Response()
         {
             // Arrange
-            var mockMachine = new Mock<ICoffeeMachine>();
+            var machineMock = new Mock<ICoffeeMachine>();
 
-            mockMachine.Setup(x => x.CheckIfMachineIsBrewingCoffee(It.IsAny<DateTime>())).Returns(true);
-            mockMachine.Setup(x => x.CheckIfMachineHasCoffee(5)).Returns(true);
+            machineMock.Setup(x => x.CheckIfMachineIsBrewingCoffee(It.IsAny<DateTime>())).Returns(true);
+            machineMock.Setup(x => x.CheckIfMachineHasCoffee(5)).Returns(true);
 
-            var controller = new CoffeeMachineController(mockMachine.Object);
+            var weatherServiceMock = new Mock<IWeatherService>();
+            weatherServiceMock.Setup(x => x.GetTemperatureFromCoordinates(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Weather());
+
+            var controller = new CoffeeMachineController(machineMock.Object, weatherServiceMock.Object);
 
             // Act
-            var result = controller.BrewCoffee();
+            var result = await controller.BrewCoffee();
 
             // Assert
             Assert.NotNull(result);
@@ -54,18 +62,21 @@ namespace ReadyTech.Tests
         }
 
         [Fact]
-        public void BrewCoffee_IsMachineNotBrewing_ShouldReturn418Response()
+        public async Task BrewCoffee_IsMachineNotBrewing_ShouldReturn418Response()
         {
             // Arrange
-            var mockMachine = new Mock<ICoffeeMachine>();
+            var machineMock = new Mock<ICoffeeMachine>();
 
-            mockMachine.Setup(x => x.CheckIfMachineIsBrewingCoffee(It.IsAny<DateTime>())).Returns(false);
-            mockMachine.Setup(x => x.CheckIfMachineHasCoffee(5)).Returns(true);
+            machineMock.Setup(x => x.CheckIfMachineIsBrewingCoffee(It.IsAny<DateTime>())).Returns(false);
+            machineMock.Setup(x => x.CheckIfMachineHasCoffee(5)).Returns(true);
 
-            var controller = new CoffeeMachineController(mockMachine.Object);
+            var weatherServiceMock = new Mock<IWeatherService>();
+            weatherServiceMock.Setup(x => x.GetTemperatureFromCoordinates(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Weather());
+
+            var controller = new CoffeeMachineController(machineMock.Object, weatherServiceMock.Object);
 
             // Act
-            var result = controller.BrewCoffee();
+            var result = await controller.BrewCoffee();
 
             // Assert
             Assert.NotNull(result);

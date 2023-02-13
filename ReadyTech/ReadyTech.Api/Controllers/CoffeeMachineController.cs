@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReadyTech.Api.Models;
+using ReadyTech.Api.Models.Interfaces;
+using ReadyTech.Api.Services.Interfaces;
 using ReadyTech.Api.Utilities;
 
 namespace ReadyTech.Api.Controllers
@@ -9,16 +11,18 @@ namespace ReadyTech.Api.Controllers
     public class CoffeeMachineController : ControllerBase
     {
         private readonly ICoffeeMachine _coffeeMachine;
+        private readonly IWeatherService _weatherService;
         private static int _coffeeBrewCounter = 0;
 
-        public CoffeeMachineController(ICoffeeMachine coffeeMachine)
+        public CoffeeMachineController(ICoffeeMachine coffeeMachine, IWeatherService weatherService)
         {
             _coffeeMachine = coffeeMachine;
+            _weatherService = weatherService;
         }
 
         [HttpGet]
         [Route("BrewCoffee")]
-        public IActionResult BrewCoffee()
+        public async Task<IActionResult> BrewCoffee()
         {
             var utcNow = DateTime.UtcNow;
 
@@ -26,14 +30,21 @@ namespace ReadyTech.Api.Controllers
             {
                 _coffeeBrewCounter++;
 
-                var coffee = _coffeeMachine.CheckIfMachineHasCoffee(_coffeeBrewCounter) ?
-                _coffeeMachine.Coffee = new Coffee
+                if (_coffeeMachine.CheckIfMachineHasCoffee(_coffeeBrewCounter))
                 {
-                    Message = "Your piping hot coffee is ready",
-                    Prepared = DateTimeUtils.FormatDateTimeToISO8601(utcNow)
-                } : null;
+                    var weather = await _weatherService.GetTemperatureFromCoordinates("-37.78", "175.27"); // <-- Coordinates of Hamilton, New Zealand
+                    _coffeeMachine.Coffee = new Coffee
+                    {
+                        Message = weather.TemperatureCelcius > 30.0 ? "Your refreshing iced coffee is ready" : "Your piping hot coffee is ready",
+                        Prepared = DateTimeUtils.FormatDateTimeToISO8601(utcNow)
+                    };
 
-                return coffee == null ? StatusCode(503, "503 Service Unavailable") : Ok(JSONUtils.SerializeObjectToJSON(coffee));
+                    return Ok(JSONUtils.SerializeObjectToJSON(_coffeeMachine.Coffee));
+                }
+                else
+                {
+                    return StatusCode(503, "503 Service Unavailable");
+                }
             }
             else
             {

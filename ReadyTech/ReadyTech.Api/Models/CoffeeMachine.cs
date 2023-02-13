@@ -1,4 +1,5 @@
-﻿using ReadyTech.Api.Utilities;
+﻿using ReadyTech.Api.Models.Interfaces;
+using ReadyTech.Api.Utilities;
 
 namespace ReadyTech.Api.Models
 {

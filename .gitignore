@@ -6,3 +6,5 @@
 /ReadyTech/ReadyTech.Api/bin/Debug/net7.0
 /ReadyTech/.vs/ReadyTech
 /ReadyTech/ReadyTech.Api/ReadyTech.Api.csproj.user
+/ReadyTech/ReadyTech.Tests/obj
+/ReadyTech/ReadyTech.Tests/bin

@@ -2,7 +2,7 @@
 
 namespace ReadyTech.Api.Models
 {
-    public class CoffeeMachine
+    public class CoffeeMachine : ICoffeeMachine
     {
         public Coffee? Coffee { get; set; }
 

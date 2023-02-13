@@ -8,42 +8,37 @@ namespace ReadyTech.Api.Controllers
     [Route("CoffeeMachine")]
     public class CoffeeMachineController : ControllerBase
     {
-        private readonly ILogger<CoffeeMachineController> _logger;
+        private readonly ICoffeeMachine _coffeeMachine;
         private static int _coffeeBrewCounter = 0;
 
-        public CoffeeMachineController(ILogger<CoffeeMachineController> logger)
+        public CoffeeMachineController(ICoffeeMachine coffeeMachine)
         {
-            _logger = logger;
+            _coffeeMachine = coffeeMachine;
         }
 
         [HttpGet]
         [Route("BrewCoffee")]
-        public ActionResult<Coffee> BrewCoffee()
+        public IActionResult BrewCoffee()
         {
             var utcNow = DateTime.UtcNow;
-            ObjectResult result;
 
-            var coffeMachine = new CoffeeMachine();
-
-            if(coffeMachine.CheckIfMachineIsBrewingCoffee(utcNow))
+            if (_coffeeMachine.CheckIfMachineIsBrewingCoffee(utcNow))
             {
                 _coffeeBrewCounter++;
 
-                var coffee = coffeMachine.CheckIfMachineHasCoffee(_coffeeBrewCounter) ?
-                coffeMachine.Coffee = new Coffee
+                var coffee = _coffeeMachine.CheckIfMachineHasCoffee(_coffeeBrewCounter) ?
+                _coffeeMachine.Coffee = new Coffee
                 {
                     Message = "Your piping hot coffee is ready",
                     Prepared = DateTimeUtils.FormatDateTimeToISO8601(utcNow)
                 } : null;
 
-                result = coffee == null ? StatusCode(503, "503 Service Unavailable") : Ok(JSONUtils.SerializeObjectToJSON(coffee));
+                return coffee == null ? StatusCode(503, "503 Service Unavailable") : Ok(JSONUtils.SerializeObjectToJSON(coffee));
             }
             else
             {
-                result = StatusCode(418, "418 I'm a teapot");
+                return StatusCode(418, "418 I'm a teapot");
             }
-
-            return result;
         }
     }
 }

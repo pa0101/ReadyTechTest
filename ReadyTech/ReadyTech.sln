@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadyTech.Api", "ReadyTech.Api\ReadyTech.Api.csproj", "{06CEE04E-34BA-40BC-A623-0D88891F0B34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadyTech.Tests", "ReadyTech.Tests\ReadyTech.Tests.csproj", "{1CA282FD-A033-4437-88B7-78059F098407}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{06CEE04E-34BA-40BC-A623-0D88891F0B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06CEE04E-34BA-40BC-A623-0D88891F0B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06CEE04E-34BA-40BC-A623-0D88891F0B34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CA282FD-A033-4437-88B7-78059F098407}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CA282FD-A033-4437-88B7-78059F098407}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CA282FD-A033-4437-88B7-78059F098407}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CA282FD-A033-4437-88B7-78059F098407}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

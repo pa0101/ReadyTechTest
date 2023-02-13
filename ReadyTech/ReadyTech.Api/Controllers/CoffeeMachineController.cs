@@ -9,7 +9,7 @@ namespace ReadyTech.Api.Controllers
     public class CoffeeMachineController : ControllerBase
     {
         private readonly ILogger<CoffeeMachineController> _logger;
-        private static int CoffeeBrewCounter = 0;
+        private static int _coffeeBrewCounter = 0;
 
         public CoffeeMachineController(ILogger<CoffeeMachineController> logger)
         {
@@ -20,15 +20,30 @@ namespace ReadyTech.Api.Controllers
         [Route("BrewCoffee")]
         public ActionResult<Coffee> BrewCoffee()
         {
-            CoffeeBrewCounter++;
+            var utcNow = DateTime.UtcNow;
+            ObjectResult result;
 
-            var coffee = new Coffee 
-            { 
-                Message = "Your piping hot coffee is ready", 
-                Prepared = DateTimeUtils.FormatDateTimeToISO8601(DateTime.UtcNow) 
-            };
+            var coffeMachine = new CoffeeMachine();
 
-            return coffee == null ? NotFound() : Ok(JSONUtils.SerializeObjectToJSON(coffee));
+            if(coffeMachine.CheckIfMachineIsBrewingCoffee(utcNow))
+            {
+                _coffeeBrewCounter++;
+
+                var coffee = coffeMachine.CheckIfMachineHasCoffee(_coffeeBrewCounter) ?
+                coffeMachine.Coffee = new Coffee
+                {
+                    Message = "Your piping hot coffee is ready",
+                    Prepared = DateTimeUtils.FormatDateTimeToISO8601(utcNow)
+                } : null;
+
+                result = coffee == null ? StatusCode(503, "503 Service Unavailable") : Ok(JSONUtils.SerializeObjectToJSON(coffee));
+            }
+            else
+            {
+                result = StatusCode(418, "418 I'm a teapot");
+            }
+
+            return result;
         }
     }
 }

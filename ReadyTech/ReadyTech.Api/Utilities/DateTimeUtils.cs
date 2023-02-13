@@ -7,5 +7,8 @@ namespace ReadyTech.Api.Utilities
         public static string FormatDateTimeToISO8601(DateTime dateTime) =>
             TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById("New Zealand Standard Time"))
             .ToString("yyyy-MM-dd'T'HH:mm:sszzz", CultureInfo.InvariantCulture);
+
+        public static DateTime GetLocalDateTimeFromUTC(DateTime utcNow) =>
+            TimeZoneInfo.ConvertTimeFromUtc(utcNow, TimeZoneInfo.FindSystemTimeZoneById("New Zealand Standard Time"));
     }
 }
